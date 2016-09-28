@@ -7,121 +7,199 @@ public class Sort
 {
 	public static void main(String[]args)
 	{	
-		
 
-	}
+		boolean EXIT = false;
+		String[] commandsFromUser;
+		Mergesort msort = new Mergesort();
+		Insertionsort isort = new Insertionsort();
 
-public static String[] getCommand()
-{
-	System.out.print("Type in insertionsort data.txt\n");		
-
-	Scanner inputCommand = new Scanner(System.in);
-		
-	String givenCommand = inputCommand.nextLine();
-
-	if(givenCommand != null)
-	{
-		String[] splitCmd = givenCommand.split("\\s+");
-		if(splitCmd[0].matches("insertionsort") || splitCmd[0].matches("mergesort"))
+		while (EXIT == false )
 		{
-			return splitCmd; 
-		}
+			commandsFromUser = getCommands();
+			if(commandsFromUser == null)
+			{
+				EXIT = true;
+			}
+			else
+			{
+				
+				String fileName = getFileName(commandsFromUser);
+
+				int instructionCalled = getInstructions(commandsFromUser);
+
+
+				String[] dataFromFile = readTheFile(fileName);
+				
+				writeUnsortedFile(dataFromFile);
+
+				String[] sortedData;
+
+				if(instructionCalled == 0)
+				{
+					//System.out.println("***Insertionsort Called!");
+
+					sortedData = isort.insertionsort(dataFromFile);
+
+					writeTheFile(sortedData);
+
+					writeTextFile(sortedData, "sorted.txt");
+				}
+				else if(instructionCalled == 1)
+				{
+					//System.out.println("***Mergesort Called!");
+
+					sortedData = msort.mSort(dataFromFile);
+
+
+				}
+
+			}
+				//	System.out.println("******** instruction given: " + instructionCalled);
+		}		
 	}
-	return null;public class mergesort<T>
+
+
+public static int getInstructions(String[] commandsGiven)
 {
-void mergesort(T[] A)
+	if(commandsGiven[0].trim().matches("mergesort"))
 	{
-	//Basecase: Array length is 1.
-	if(A.length > 1)
+		return 1;
+	}
+	else if(commandsGiven[0].trim().matches("insertionsort"))
 	{
-		int endOfHead = A.length / 2;
-		int lengthOfTail = A.length - (A.length/2);
-		T[] head = (T[]) new Object[endOfHead];
-		System.arraycopy(A, 0, head, 0, endOfHead);
-		T[] tail = (T[]) new Object[lengthOfTail];
-		System.arraycopy(A, endOfHead, tail, 0, lengthOfTail);
-		mergesort(head);
-		mergesort(tail);
-		merge(head,tail,A);
+		return 0;
+	}
+	else
+		return -1;
+}
+
+public static String getFileName(String[] dataFromFile)
+{
+	String fileName;
+	String extention = ".txt";
+
+	if(dataFromFile.length == 0)
+	{
+		return null;
+	}
+	
+	fileName = dataFromFile[1].trim();
+		
+	if(fileName.endsWith(extention))
+		{
+			return fileName;
+		}
+	else
+	{
+		return null;
+	}
+
+}
+
+public static void writeUnsortedFile(String[] unsortedFile)
+{
+	if (unsortedFile.length == 0)
+		return;
+	else
+	{
+		System.out.println("-------- Unsorted File --------");
+
+		for(int i = 0; i < unsortedFile.length; i++)
+		{
+			System.out.println( " " + unsortedFile[i] + "" );
+		}
+
+		System.out.println("-------- End Of File --------");
+	}
+
+}
+public static void writeTheFile(String[] sortedFile)
+{
+	if (sortedFile.length == 0)
+		return;
+	else
+	{
+		System.out.println("-------- Sorted File --------");
+
+		for(int i = 0; i < sortedFile.length; i++)
+		{
+			System.out.println( " " +sortedFile[i] + "" );
+		}
+
+		System.out.println("-------- End Of File --------");
 	}
 }
 
-public int compareTo(T str1 ,T str2)
+
+
+public static String[] readTheFile(String fileName)
 {
-	String first = String.valueOf(str1);
-	String second = String.valueOf(str2);
 
+	System.out.println("\n****** Reading from file: /" + fileName + "*****");
 
-	String[] spl1 = first.trim().split("\\s+");	
-	String[] spl2 = second.trim().split("\\s+");
+	ArrayList<String> data = new ArrayList<String>();
+	
+	String line = null;
+	
 	try
+	{
+		FileReader filereader = new FileReader(fileName);
+		BufferedReader bufferedreader = new BufferedReader(filereader);
+		while( (line = bufferedreader.readLine()) != null)
+		{
+			data.add(line);
+		}	
+		
+		bufferedreader.close();
+	}
+
+	catch(FileNotFoundException e)
 	{	
-		int strOne = Integer.parseInt(spl1[0]);
-		int strTwo = Integer.parseInt(spl2[0]);
-
-		if(strOne > strTwo)
-		{
-			return 1;
-		}
-		else if(strOne < strTwo)
-		{
-			return -1;
-		}
-		else if(strOne == strTwo)
-		{
-			return 0;
-		}
-
+		System.out.println("\n\t\t***File not found!***\n");
 	}
-	catch(NumberFormatException e)
+
+	catch(IOException ex)
 	{
-
+		System.out.println("\n\t\t***End of File***\n");
 	}
-	return 0;
+
+	String[] names = new String[data.size()];
+	
+	names = data.toArray(names);
+
+	return names;
+
 }
 
-
-public void merge(T[] Head, T[] Tail, T[] Original)
+public static String[] getCommands()
 {
-	int aPointer = 0;
-	int bPointer = 0;
-	int cPointer = 0;
-	while(aPointer < Head.length && bPointer < Tail.length)
+	System.out.println("Valid instructions are: ");		
+	System.out.println("\t1) insertionsort _____.txt");
+	System.out.println("\t2) mergesort _____.txt");
+	System.out.println("Type in instruction: \t");
+	Scanner inputCommand = new Scanner(System.in);	
+	String givenCommand = inputCommand.nextLine();
+	
+
+	while( !givenCommand.trim().matches("exit") )
 		{
-			//Head < Tail
-			if( compareTo( Head[aPointer] , Tail[bPointer]) < 0)
-			{
-				Original[cPointer] = Head[aPointer];
-				cPointer++;
-				aPointer++;
-			}
-			//Head > Tail
-			else if ( compareTo( Head[aPointer], Tail[bPointer]) > 0 )
-			{
-				Original[cPointer] = Tail[bPointer];
-				bPointer++;
-				cPointer++;
-			}
-			else if( compareTo(Head[aPointer], Tail[bPointer]) == 0)
-			{
-				Original[cPointer++] = Head[aPointer++];
-				Original[cPointer++] = Tail[bPointer++];
-			}
+			String[] instructionArray = givenCommand.split("\\s+");
 
-		}
-
-	while(aPointer < Head.length && cPointer < Original.length)
-	{
-		Original[cPointer] = Head[aPointer];
-		aPointer++;
-		cPointer++;
-	}
-	while(bPointer < Tail.length && cPointer < Original.length)
-	{
-		Original[cPointer] = Tail[bPointer];
-		bPointer++;
-		cPointer++;
-	}
+			if(instructionArray[0].matches("insertionsort") || 
+				instructionArray[0].matches("mergesort") )
+					{
+						return instructionArray;
+					}
+			else
+					{
+						System.out.println("Not a valid instruction\nType in instruction or\nType exit to quit.");
+						givenCommand = inputCommand.nextLine();
+					}
+		}	
+	return null;
 }
 
+
 }
+
+
