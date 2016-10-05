@@ -17,7 +17,6 @@ public class Sort
 {
 	public static void main(String[]args)
 	{	
-
 		boolean EXIT = false;
 		String[] commandsFromUser;
 		
@@ -41,24 +40,28 @@ public class Sort
 		
 			else
 			{
+				int instructionCalled = getInstructions(commandsFromUser);
 				
+				if(instructionCalled == 3)
+				{
+					analyzeN();
+					break;
+				}
+
 				String fileName = getFileName(commandsFromUser);
 
-				int instructionCalled = getInstructions(commandsFromUser);
-
 				String[] dataFromFile = readTheFile(fileName);
-				
-				writeUnsortedFile(dataFromFile);
 
+				writeUnsortedFile(dataFromFile);
+				
 				String[] sortedData;
 
-				if(instructionCalled == 0)
+				if (instructionCalled == 0)
 				{
 					sortedData = isort.insertionsort(dataFromFile);
 
 					writeTheFile(sortedData);
 
-					writeTextFile(sortedData, "sorted.txt");
 				}
 
 				else if(instructionCalled == 1)
@@ -67,18 +70,14 @@ public class Sort
 					
 					writeTheFile(sortedData);
 
-					writeTextFile(sortedData, "sorted.txt");
 				}
 
 				else if(instructionCalled == 2)
 				{
-					sortedData = qsort.qsort(dataFromFile);
+					sortedData = qsort.qSort(dataFromFile);
 
 					writeTheFile(sortedData);
-
-					writeTextFile(sortedData,"sorted.txt");
 				}
-
 			}
 				
 		}		
@@ -91,6 +90,10 @@ public class Sort
 */
 public static int getInstructions(String[] commandsGiven)
 {	
+	if(commandsGiven[0].trim().matches("makerandom"))
+	{
+		return 3;
+	}
 	if(commandsGiven[0].trim().matches("quicksort"))
 	{
 		return 2;
@@ -114,6 +117,7 @@ public static int getInstructions(String[] commandsGiven)
 */
 public static String getFileName(String[] dataFromFile)
 {
+
 	String fileName;
 	String extention = ".txt";
 
@@ -123,7 +127,7 @@ public static String getFileName(String[] dataFromFile)
 	}
 	
 	fileName = dataFromFile[1].trim();
-		
+
 	if(fileName.endsWith(extention))
 		{
 			return fileName;
@@ -142,6 +146,11 @@ public static void writeUnsortedFile(String[] unsortedFile)
 {
 	if (unsortedFile.length == 0)
 		return;
+	if (unsortedFile.length > 10)
+	{
+		System.out.println("\n--------Too much data to print-------");
+		return;
+	}
 	else
 	{
 		System.out.println("\n-------- Unsorted File --------");
@@ -162,6 +171,11 @@ public static void writeTheFile(String[] sortedFile)
 {
 	if (sortedFile.length == 0)
 		return;
+	if(sortedFile.length > 10)
+	{
+		System.out.println("\n--------Too much data to print-------");
+		return;
+	}
 	else
 	{
 		System.out.println("\n-------- Sorted File --------");
@@ -222,11 +236,13 @@ public static String[] readTheFile(String fileName)
 public static String[] getCommands()
 {
 	System.out.println("Valid instructions are: ");		
-	System.out.println("\t1) insertionsort _____.txt");
-	System.out.println("\t2) mergesort _____.txt");
-	System.out.println("\t3) quicksort _____.txt");
-	System.out.println("\t4) exit")
+	System.out.println("\t==> insertionsort _____.txt");
+	System.out.println("\t==> mergesort _____.txt");
+	System.out.println("\t==> quicksort _____.txt");
+	System.out.println("\t==> makerandom");
+	System.out.println("\t==> exit");
 	System.out.println("Type in instruction: \t");
+	System.out.print("=>");
 	Scanner inputCommand = new Scanner(System.in);	
 	String givenCommand = inputCommand.nextLine();
 	
@@ -235,19 +251,104 @@ public static String[] getCommands()
 		{
 			String[] instructionArray = givenCommand.split("\\s+");
 
-			if(instructionArray[0].matches("insertionsort") || 
-				instructionArray[0].matches("mergesort") )
+			if(instructionArray[0].matches("insertionsort") 
+				|| instructionArray[0].matches("mergesort")  
+				|| instructionArray[0].matches("quicksort")
+				|| instructionArray[0].matches("makerandom") )
 					{
 						return instructionArray;
 					}
 			else
-					{
-						System.out.println("Not a valid instruction\nType in instruction or\nType exit to quit.");
-						givenCommand = inputCommand.nextLine();
-					}
+				{
+					System.out.println("Not a valid instruction\nType in instruction or\nType exit to quit.");
+					givenCommand = inputCommand.nextLine();
+				}
 		}	
 	return null;
 }
+
+	/**
+	Returns a String array with random integers in the first colum and two random chars after.
+	*/
+	public static String[] makeRandomTable(int count)
+	{
+		if (count == 0)
+		{
+			return null;
+		}
+		Random randomNumGen = new Random();
+		String[] dataOut = new String[count];
+		for(int i = 0; i < dataOut.length; i++)
+		{
+			int randomId = randomNumGen.nextInt(1000000) + 1 ;
+			char randChar1 = (char) (randomNumGen.nextInt(26) + 'a');
+			char randChar2 = (char) (randomNumGen.nextInt(26) + 'a');
+			dataOut[i] = String.valueOf(randomId) + " " + String.valueOf(randChar1) + " " + String.valueOf(randChar2);
+		}
+		return dataOut;
+	}
+
+	public static void writeTableToText(String[] dataFile, String fileOutName)
+	{
+		if(dataFile == null || fileOutName == null)
+		{
+			return;
+		}
+
+		try
+		{
+			PrintWriter writer = new PrintWriter(fileOutName);
+			int tableSize = dataFile.length;
+			System.out.println("\n\t\t------WRITING TEST TABLE SIZE: " + tableSize + " to "+ fileOutName);
+			for(int i = 0; i < dataFile.length; i++)
+			{
+
+				writer.println(dataFile[i]);
+			}
+
+			writer.close();
+
+		}
+
+		catch(FileNotFoundException fnfe)
+		{
+			return;
+		}
+
+	}	
+
+	public static void analyzeN()
+	{
+
+					Scanner input = new Scanner(System.in);
+
+					System.out.println("Enter # of entries to be randomly generated. ");
+
+					int makeN = input.nextInt();
+
+					if(makeN == 0)
+					{
+						return;
+					}
+
+					String[] randomTable = makeRandomTable(makeN);
+
+					System.out.println("Enter the Output file name and extention .txt ");
+					
+
+					Scanner n = new Scanner(System.in);
+
+					String fileOutName = n.next().trim();
+
+					if(!fileOutName.endsWith(".txt"))
+					{
+						fileOutName = fileOutName + ".txt";
+					}
+
+
+					writeTableToText(randomTable,fileOutName);
+		
+	}
 
 
 }

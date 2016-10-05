@@ -13,9 +13,8 @@ public class Insertionsort
 	public String[] insertionsort(String[] data)
 	{
 		dataFile = data;
-
-		long startTime = System.currentTimeMillis() % 1000;
-
+		long startTime = System.currentTimeMillis();
+		System.out.println("##### Start time: " + startTime);
 		for(int i = 1; i < dataFile.length; i++)
 		{
 			int j = i - 1;
@@ -29,11 +28,13 @@ public class Insertionsort
 
 			dataFile[j+1] = currentKey;
 		}
+		long stopTime = System.currentTimeMillis();
+		System.out.println("##### Stop time: " + stopTime);
+		System.out.println("\n\t ### Took : " + (stopTime - startTime)  % 1000 + " milliseconds to insertionsort. ###");
+		
+		startTime = 0;
+		stopTime = 0;
 
-		long stopTime = System.currentTimeMillis() % 1000;
-		
-		System.out.println("\n\t ### Took : " + (stopTime - startTime) + " milliseconds to insertionsort. ###");
-		
 		return dataFile;
 
 	}

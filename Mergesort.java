@@ -1,9 +1,7 @@
-
-
 public class Mergesort
 {
-	String[] dataFile;
-
+	private String[] dataFile;
+	
 	public Mergesort()
 	{
 
@@ -16,12 +14,19 @@ public class Mergesort
 
 	public String[] mSort(String[] input)
 	{
-		long startTime = System.currentTimeMillis() % 1000;
 		dataFile = input;
+		long startTime = System.currentTimeMillis();
+		System.out.println("##### Start time: " + startTime);
 		mergesort(dataFile);
-		long stopTime = System.currentTimeMillis() % 1000;
+		long stopTime = System.currentTimeMillis();
+		System.out.println("##### Stop time: " + stopTime);
+		System.out.println("\n\t ### Took : " + (stopTime - startTime)%1000 + " milliseconds to mergesort. ###");
+		
+		startTime = 0;
+		stopTime = 0;
 
-		System.out.println("\n\t ### Took : " + (stopTime - startTime) + " milliseconds to mergesort. ###");
+
+
 		return dataFile;
 	}
 	public String[] getFile()

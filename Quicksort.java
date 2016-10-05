@@ -1,6 +1,6 @@
 public class Quicksort
 {
-	private String[] dataArray;
+	private String[] dataFile;
 
 	public Quicksort()
 	{
@@ -9,26 +9,44 @@ public class Quicksort
 
 	public Quicksort(String[] data)
 	{
-		dataArray = data;
+		dataFile = data;
 	}
 
 	public String[] getData()
 	{
-		return dataArray;
+		return dataFile;
 	}
 
 	public String[] quicksort()
 	{
-		quicksort(dataArray,0,dataArray.length);
-		return dataArray;
+		quicksort(dataFile,0,dataFile.length);
+		return dataFile;
+	}	
+	public String[] qSort(String[] input)
+	{	
+		dataFile = input;	
+
+		long startTime = System.currentTimeMillis();
+		
+		System.out.println("##### Start time: " + startTime);
+		quicksort(dataFile,0,dataFile.length - 1);
+		long stopTime = System.currentTimeMillis();
+		System.out.println("##### Stop time: " + stopTime);
+
+		System.out.println("\n\t ### Took : " + (stopTime - startTime)%1000 + " milliseconds to quicksort. ###");
+		
+		startTime = 0;
+		stopTime = 0;
+
+		return dataFile;
 	}
 
 	public String[] quicksort(String[] data)
 	{
 
-		dataArray = data;
-		quicksort(dataArray,0,dataArray.length);
-		return dataArray;
+		dataFile = data;
+		quicksort(dataFile, 0 , dataFile.length - 1);
+		return dataFile;
 	}
 
 	public void quicksort(String[] data, int low, int high)
@@ -51,21 +69,24 @@ public class Quicksort
 	
 	public static int partition(String[] data, int low, int high)
 	{
-		int i = low;
-		int j = high;
 
-		String pivotString = data[ (low+high) / 2];
-		while ( i <= j )
-		{
-			//Compare the pivotString against the low values of Data array.
-			while( compareTo(pivotString , data[i]) > 0  )
+			int i = low;
+			int j = high;
+			String pivotString = data[ (low+high) / 2];
+			while ( i <= j )
 			{
-				i++;
-			}
-			while(compareTo(pivotString, data[j])  < 0)
+				//Compare the pivotString against the low values of Data array.
+			
+				while( compareTo(pivotString , data[i]) > 0  )
+				{
+					i++;
+				}
+
+			while( compareTo(pivotString, data[j])  < 0 )
 			{
 				j--;
 			}
+
 			if(i <= j)
 			{
 				String swapData = data[i];
