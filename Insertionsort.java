@@ -1,86 +1,33 @@
-public class Insertionsort
-{
-	String[] dataFile;
-
-	public Insertionsort()
-	{
-	}
-	public Insertionsort(String[] input)
-	{
-		dataFile = input;
-	}
-
-	public String[] insertionsort(String[] data)
-	{
-		dataFile = data;
-		long startTime = System.currentTimeMillis();
-		System.out.println("##### Start time: " + startTime);
-		for(int i = 1; i < dataFile.length; i++)
-		{
-			int j = i - 1;
-
-			String currentKey = dataFile[i];
-			
-			for( j = i-1 ; (j >= 0 && compareTo(dataFile[j],currentKey) > 0); j--)
-			{
-				dataFile[j+1] = dataFile[j];
-			}
-
-			dataFile[j+1] = currentKey;
-		}
-		long stopTime = System.currentTimeMillis();
-		System.out.println("##### Stop time: " + stopTime);
-		System.out.println("\n\t ### Took : " + (stopTime - startTime)  % 1000 + " milliseconds to insertionsort. ###");
-		
-		startTime = 0;
-		stopTime = 0;
-
-		return dataFile;
-
-	}
-
-	public int compareTo(String first, String second)
-	{
-		//String firstIndex = String.valueOf(first);
-		//String secondIndex = String.valueOf(second);
-
-		String[] spl1 = first.trim().split("\\s+");	
-
-		String[] spl2 = second.trim().split("\\s+");
-		try
-		{	
-			int strOne = Integer.parseInt(spl1[0]);
-			int strTwo = Integer.parseInt(spl2[0]);
-
-			if(strOne > strTwo)
-			{
-				return 1;
-			}
-
-			else if(strOne < strTwo)
-			{
-				return -1;
-			}
-
-			else if(strOne == strTwo)
-			{
-				return 0;
-			}
-
-		}
-		catch(NumberFormatException e)
-		{
-
-		}
-		return 0;		
-	}
-
-
-
-
-
-
-
-
+package CS146;
+/**
+ * Class Insertionsort
+ * @author tranth
+ */
+public class Insertionsort extends Sort{
+    /**
+     * Method called to begin the insertion sort sequence.
+     * @param dataFile pass the unsorted data in as a String array.
+     * @return returns the sorted data as a string array.
+     */
+    public static String[] iSort(String[] dataFile)
+    {
+      
+        startTimer();
+        insertionsort(dataFile);
+        stopTimer();
+        printElapsedTime("Insertionsort");
+        return dataFile;
+    }
+    public static String[] insertionsort(String[] dataFile) {
+        for (int i = 1; i < dataFile.length; i++) {
+            String currentKey = dataFile[i];
+            int j = (i-1);
+            for (j = i - 1; (j >= 0 && compareTo(dataFile[j], currentKey) > 0); j--) {
+                dataFile[j + 1] = dataFile[j];
+            }
+            dataFile[j + 1] = currentKey;
+        }
+        return dataFile;
+    }
 
 }

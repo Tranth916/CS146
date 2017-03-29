@@ -1,356 +1,95 @@
-/**
-Thao Tran
-CS146 Data Structures and Algorithms, FALL 2016
-Section 3.
-
-Analysis of Theta (n^2) versus Theta (n log n) sorting algorithms.
-
-*/
-
-
-import java.util.Random;
-import java.lang.*;
-import java.io.*;
-import java.util.*;
-
-public class Sort
-{
-	public static void main(String[]args)
-	{	
-		boolean EXIT = false;
-		String[] commandsFromUser;
-		
-		Mergesort msort = new Mergesort();
-		Insertionsort isort = new Insertionsort();
-		Quicksort qsort = new Quicksort();
-
-		while (EXIT == false )
-		{
-			commandsFromUser = getCommands();
-			/* 
-				getCommands() returns a String Array.
-			    Command instruction is stored in Array[0]
-			    Text file name is stored in Array[1]
-			*/
-
-			if(commandsFromUser == null)
-			{
-				EXIT = true;
-			}
-		
-			else
-			{
-				int instructionCalled = getInstructions(commandsFromUser);
-				
-				if(instructionCalled == 3)
-				{
-					analyzeN();
-					break;
-				}
-
-				String fileName = getFileName(commandsFromUser);
-
-				String[] dataFromFile = readTheFile(fileName);
-
-				writeUnsortedFile(dataFromFile);
-				
-				String[] sortedData;
-
-				if (instructionCalled == 0)
-				{
-					sortedData = isort.insertionsort(dataFromFile);
-
-					writeTheFile(sortedData);
-
-				}
-
-				else if(instructionCalled == 1)
-				{
-					sortedData = msort.mSort(dataFromFile);
-					
-					writeTheFile(sortedData);
-
-				}
-
-				else if(instructionCalled == 2)
-				{
-					sortedData = qsort.qSort(dataFromFile);
-
-					writeTheFile(sortedData);
-				}
-			}
-				
-		}		
-	}
-
-
-/** 
-	Processes the String Array given by the user.
-	Index [0] holds the requested sorting algorithm.
-*/
-public static int getInstructions(String[] commandsGiven)
-{	
-	if(commandsGiven[0].trim().matches("makerandom"))
+package CS146;
+public class Sort{
+    public static void main(String[] args)
+    {
+        /*
+        Call constructor to initialize the sort controller.
+        Constructor starts the program's loop.
+        */
+        SortController sort = new SortController();        
+    }
+    
+    private static long startTime;
+    private static long stopTime;
+    
+    /**
+     * 
+     * @param firstNum first integer to compare.
+     * @param secondNum second integer to compare.
+     * @return returns 1 if first > second, 0 if equal, -1 if first < second.
+     */
+    public static int compareTo(int firstNum, int secondNum)
+    {
+        return Integer.compare(firstNum, secondNum);
+    }
+  
+    /**
+     * 
+     * @param str1 String value of the first. First integer will be parsed from the string.
+     * @param str2 String value of the second. Second integer will be parsed from the string.
+     * @return  returns 1 if Parsed integer from str1 > str2, 0 if equal, -1 if str1 < str2
+     */
+    public static int compareTo(String str1 ,String str2)
 	{
-		return 3;
-	}
-	if(commandsGiven[0].trim().matches("quicksort"))
-	{
-		return 2;
-	}
-	if(commandsGiven[0].trim().matches("mergesort"))
-	{
-		return 1;
-	}
-	else if(commandsGiven[0].trim().matches("insertionsort"))
-	{
-		return 0;
-	}
-	else
-		return -1;
-}
-
-/**
-	Processes the String Array given by the user.
-	Index[1] holds the name of the text file.
-	File's extention must be of ".txt"
-*/
-public static String getFileName(String[] dataFromFile)
-{
-
-	String fileName;
-	String extention = ".txt";
-
-	if(dataFromFile.length == 0)
-	{
-		return null;
-	}
-	
-	fileName = dataFromFile[1].trim();
-
-	if(fileName.endsWith(extention))
-		{
-			return fileName;
-		}
-	else
-	{
-		return null;
-	}
-
-}
-
-/**
-	Print to command/terminal the entries in the unsorted array.
-*/
-public static void writeUnsortedFile(String[] unsortedFile)
-{
-	if (unsortedFile.length == 0)
-		return;
-	if (unsortedFile.length > 10)
-	{
-		System.out.println("\n--------Too much data to print-------");
-		return;
-	}
-	else
-	{
-		System.out.println("\n-------- Unsorted File --------");
-
-		for(int i = 0; i < unsortedFile.length; i++)
-		{
-			System.out.println( " " + unsortedFile[i] + "" );
-		}
-
-		System.out.println("\n-------- End Of File --------");
-	}
-
-}
-/**
-	Print to command/termial the entries in the sorted Array.
-*/
-public static void writeTheFile(String[] sortedFile)
-{
-	if (sortedFile.length == 0)
-		return;
-	if(sortedFile.length > 10)
-	{
-		System.out.println("\n--------Too much data to print-------");
-		return;
-	}
-	else
-	{
-		System.out.println("\n-------- Sorted File --------");
-
-		for(int i = 0; i < sortedFile.length; i++)
-		{
-			System.out.println( " " +sortedFile[i] + "" );
-		}
-
-		System.out.println("\n-------- End Of File --------");
-	}
-}
-
-
-/** 
-	Process the file, Buffer is used to read each entry in the file.
-	Each entry is separated by a new line.
-*/
-public static String[] readTheFile(String fileName)
-{
-
-	System.out.println("\n****** Reading from file: /" + fileName + "*****");
-
-	ArrayList<String> data = new ArrayList<String>();
-	
-	String line = null;
-	
-	try
-	{
-		FileReader filereader = new FileReader(fileName);
-		BufferedReader bufferedreader = new BufferedReader(filereader);
-		while( (line = bufferedreader.readLine()) != null)
-		{
-			data.add(line);
-		}	
-		
-		bufferedreader.close();
-	}
-
-	catch(FileNotFoundException e)
-	{	
-		System.out.println("\n\t\t***File not found!***\n");
-	}
-
-	catch(IOException ex)
-	{
-		System.out.println("\n\t\t***End of File***\n");
-	}
-
-	String[] names = new String[data.size()];
-	
-	names = data.toArray(names);
-
-	return names;
-
-}
-
-public static String[] getCommands()
-{
-	System.out.println("Valid instructions are: ");		
-	System.out.println("\t==> insertionsort _____.txt");
-	System.out.println("\t==> mergesort _____.txt");
-	System.out.println("\t==> quicksort _____.txt");
-	System.out.println("\t==> makerandom");
-	System.out.println("\t==> exit");
-	System.out.println("Type in instruction: \t");
-	System.out.print("=>");
-	Scanner inputCommand = new Scanner(System.in);	
-	String givenCommand = inputCommand.nextLine();
-	
-
-	while( !givenCommand.trim().matches("exit") )
-		{
-			String[] instructionArray = givenCommand.split("\\s+");
-
-			if(instructionArray[0].matches("insertionsort") 
-				|| instructionArray[0].matches("mergesort")  
-				|| instructionArray[0].matches("quicksort")
-				|| instructionArray[0].matches("makerandom") )
-					{
-						return instructionArray;
-					}
-			else
-				{
-					System.out.println("Not a valid instruction\nType in instruction or\nType exit to quit.");
-					givenCommand = inputCommand.nextLine();
-				}
-		}	
-	return null;
-}
-
-	/**
-	Returns a String array with random integers in the first colum and two random chars after.
-	*/
-	public static String[] makeRandomTable(int count)
-	{
-		if (count == 0)
-		{
-			return null;
-		}
-		Random randomNumGen = new Random();
-		String[] dataOut = new String[count];
-		for(int i = 0; i < dataOut.length; i++)
-		{
-			int randomId = randomNumGen.nextInt(1000000) + 1 ;
-			char randChar1 = (char) (randomNumGen.nextInt(26) + 'a');
-			char randChar2 = (char) (randomNumGen.nextInt(26) + 'a');
-			dataOut[i] = String.valueOf(randomId) + " " + String.valueOf(randChar1) + " " + String.valueOf(randChar2);
-		}
-		return dataOut;
-	}
-
-	public static void writeTableToText(String[] dataFile, String fileOutName)
-	{
-		if(dataFile == null || fileOutName == null)
-		{
-			return;
-		}
-
+			String first = String.valueOf(str1);
+			String second = String.valueOf(str2);
+                        /*
+                        Split each string by regex. "\\s+" will separate each
+                        by the space character.
+                        */
+			String[] spl1 = first.trim().split("\\s+");	
+			String[] spl2 = second.trim().split("\\s+");
 		try
-		{
-			PrintWriter writer = new PrintWriter(fileOutName);
-			int tableSize = dataFile.length;
-			System.out.println("\n\t\t------WRITING TEST TABLE SIZE: " + tableSize + " to "+ fileOutName);
-			for(int i = 0; i < dataFile.length; i++)
-			{
+		{	
+				int strOne = Integer.parseInt(spl1[0]);
+				int strTwo = Integer.parseInt(spl2[0]);
 
-				writer.println(dataFile[i]);
-			}
-
-			writer.close();
-
+				if(strOne > strTwo)
+				{
+					return 1;
+				}
+				else if(strOne < strTwo)
+				{
+					return -1;
+				}
+				else if(strOne == strTwo)
+				{
+					return 0;
+				}
 		}
+		catch(NumberFormatException e)
+				{
 
-		catch(FileNotFoundException fnfe)
-		{
-			return;
-		}
-
-	}	
-
-	public static void analyzeN()
-	{
-
-					Scanner input = new Scanner(System.in);
-
-					System.out.println("Enter # of entries to be randomly generated. ");
-
-					int makeN = input.nextInt();
-
-					if(makeN == 0)
-					{
-						return;
-					}
-
-					String[] randomTable = makeRandomTable(makeN);
-
-					System.out.println("Enter the Output file name and extention .txt ");
-					
-
-					Scanner n = new Scanner(System.in);
-
-					String fileOutName = n.next().trim();
-
-					if(!fileOutName.endsWith(".txt"))
-					{
-						fileOutName = fileOutName + ".txt";
-					}
-
-
-					writeTableToText(randomTable,fileOutName);
-		
+				}
+				return 0;
 	}
-
-
+    /**
+     * Initializes the start time.
+     */
+    public static void startTimer()
+    {
+        startTime = System.nanoTime();
+        System.out.println("##### Start time: " + startTime);    
+    }
+    /**
+     * Initializes the stop time.
+     */
+    public static void stopTimer()
+    {
+        stopTime = System.nanoTime();
+        System.out.println("##### Stop time:  " + stopTime);
+    }
+    /**
+     * @param SortMethod pass the string value of which method was called.
+     */
+    public static void printElapsedTime(String SortMethod)
+    {    
+        long totalTime = (long) ((stopTime-startTime) * Math.pow(10.0, -6));
+        
+        System.out.println("\n\t ### Took : " + totalTime + " Milliseconds using " + SortMethod);
+	
+        startTime = 0;
+        stopTime = 0;   
+    }
+    
 }
-
-

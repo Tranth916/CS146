@@ -1,98 +1,56 @@
-public class Mergesort
-{
-	private String[] dataFile;
-	
-	public Mergesort()
+package CS146;
+/**
+ * Mergesort class.
+ * @author tranth
+ */
+public class Mergesort extends Sort{
+    /**
+     * @param input pass the unsorted data in an unsorted String array.
+     * @return return the sorted array.
+     */
+	public static String[] mSort(String[] input)
 	{
-
+                startTimer();
+                mergesort(input);
+                stopTimer();
+                printElapsedTime("Mergesort"); 
+                
+		return input;
 	}
-	public Mergesort(String[] input)
+        /**
+         * @param unsortedData pass the unsorted array through recursively.
+         *  
+         */
+	public static void mergesort(String[] unsortedData)
 	{
-		dataFile = input;
-		mergesort(dataFile);
-	}
-
-	public String[] mSort(String[] input)
-	{
-		dataFile = input;
-		long startTime = System.currentTimeMillis();
-		System.out.println("##### Start time: " + startTime);
-		mergesort(dataFile);
-		long stopTime = System.currentTimeMillis();
-		System.out.println("##### Stop time: " + stopTime);
-		System.out.println("\n\t ### Took : " + (stopTime - startTime)%1000 + " milliseconds to mergesort. ###");
-		
-		startTime = 0;
-		stopTime = 0;
-
-
-
-		return dataFile;
-	}
-	public String[] getFile()
-	{
-		return dataFile;
-	}
-
-	public void mergesort(String[] A)
-	{
-	//Basecase: Array length is 1.
-		if(A.length > 1)
+		if(unsortedData.length > 1)
 		{
-			int endOfHead = A.length / 2;
-			int lengthOfTail = A.length - (A.length/2);
+			int endOfHead = unsortedData.length / 2;
+			int lengthOfTail = unsortedData.length - (unsortedData.length/2);
 			String[] head = new String[endOfHead];
-			System.arraycopy(A, 0, head, 0, endOfHead);
+			System.arraycopy(unsortedData, 0, head, 0, endOfHead);
 			String[] tail = new String[lengthOfTail];
-			System.arraycopy(A, endOfHead, tail, 0, lengthOfTail);
+			System.arraycopy(unsortedData, endOfHead, tail, 0, lengthOfTail);
 			mergesort(head);
 			mergesort(tail);
-			merge(head,tail,A);
+			merge(head,tail,unsortedData);
 		}
-	}
-
-	public int compareTo(String str1 ,String str2)
-	{
-			String first = String.valueOf(str1);
-			String second = String.valueOf(str2);
-
-
-			String[] spl1 = first.trim().split("\\s+");	
-			String[] spl2 = second.trim().split("\\s+");
-		try
-		{	
-				int strOne = Integer.parseInt(spl1[0]);
-				int strTwo = Integer.parseInt(spl2[0]);
-
-				if(strOne > strTwo)
-				{
-					return 1;
-				}
-				else if(strOne < strTwo)
-				{
-					return -1;
-				}
-				else if(strOne == strTwo)
-				{
-					return 0;
-				}
-		}
-		catch(NumberFormatException e)
-				{
-
-				}
-				return 0;
-	}
-
-	public void merge(String[] Head, String[] Tail, String[] Original)
+	}    
+        /**
+         * 
+         * @param Head begin the merging sequence from the first index to mid index.
+         * @param Tail begin the merging sequence from the mid index to the last index.
+         * @param Original combine the sorted head array and tail array.
+         */
+	public static void merge(String[] Head, String[] Tail, String[] Original)
 		{
-				int headPointer = 0;
-				int tailPointer = 0;
-				int originalPointer = 0;
+			int headPointer = 0;
+			int tailPointer = 0;
+			int originalPointer = 0;
 			while(headPointer < Head.length && tailPointer < Tail.length)
 			{
 					//Head < Tail
-					if( compareTo( Head[headPointer] , Tail[tailPointer]) < 0)
+			if( compareTo( Head[headPointer] , Tail[tailPointer]) < 0)
 					{
 						Original[originalPointer] = Head[headPointer];
 						originalPointer++;
